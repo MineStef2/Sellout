@@ -323,10 +323,9 @@ GameObject:
   - component: {fileID: 29892962}
   - component: {fileID: 29892964}
   - component: {fileID: 29892963}
-  - component: {fileID: 29892965}
   - component: {fileID: 29892966}
   m_Layer: 5
-  m_Name: AvailableCompanies
+  m_Name: AvailableCompaniesPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -390,23 +389,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 29892961}
   m_CullTransparentMesh: 1
---- !u!114 &29892965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 29892961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[{"name":"companyEntryInstance","value":{"$content":0,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
-      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
-    _objectReferences:
-    - {fileID: 6576640824648878957, guid: 9cd9fd67a95ddbe4d8afd5768c7b9541, type: 3}
 --- !u!114 &29892966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -869,7 +851,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62da7e74b3a2f184486659657babdde0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  companyCount: 0
 --- !u!114 &120064220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -897,11 +878,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _json: '{"declarations":{"Kind":"Object","collection":{"$content":[{"name":"noCompanies","value":{"$content":0,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
-      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"},{"name":"availableCompanies","value":{"$content":1,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
+      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"},{"name":"availableCompaniesPanel","value":{"$content":1,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
+      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"},{"name":"companyEntryInstance","value":{"$content":2,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
       UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
     _objectReferences:
     - {fileID: 283464238}
     - {fileID: 29892961}
+    - {fileID: 6576640824648878957, guid: 9cd9fd67a95ddbe4d8afd5768c7b9541, type: 3}
 --- !u!1 &161836336
 GameObject:
   m_ObjectHideFlags: 0
@@ -936,7 +919,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18.1, y: 26.277}
+  m_AnchoredPosition: {x: -5.134506, y: 26.277}
   m_SizeDelta: {x: 152.171, y: 9.624}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &161836338
@@ -1231,7 +1214,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.1, y: 41.891}
+  m_AnchoredPosition: {x: 34.9, y: 43.3}
   m_SizeDelta: {x: 244.88, y: 21.605}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &243596058
@@ -2370,7 +2353,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 64.753006, y: -9.173889}
+  m_AnchoredPosition: {x: 41.518, y: -9.173889}
   m_SizeDelta: {x: 245.4769, y: 8.943}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &496702993
@@ -2403,8 +2386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edffa024ceda00249893c47d50dc3d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataFolder: gameData
-  companyDataFolder: companyData
+  dataFolder: data
+  companyDataFolder: companies
 --- !u!114 &496702995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2602,8 +2585,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 64.753006, y: -9.173889}
-  m_SizeDelta: {x: 245.4769, y: 8.943}
+  m_AnchoredPosition: {x: 33.885, y: -12}
+  m_SizeDelta: {x: 242.85, y: 8.943}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &500850925
 MonoBehaviour:
@@ -2625,7 +2608,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You may also assign a company to an existing CEO by entering their name.
+  m_text: You may also assign a company to an existing owner by entering their name.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2690,7 +2673,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0.000091531925, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2734,8 +2717,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[{"name":"mainMenuPanel","value":null,"typeHandle":{"Identification":"UnityEngine.GameObject,
-      UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"},{"name":"companiesPanel","value":{"$content":0,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
+    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[{"name":"companiesPanel","value":{"$content":0,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
       UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"},{"name":"newCompanyPanel","value":{"$content":1,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
       UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"},{"name":"importCompanyPanel","value":{"$content":2,"$type":"UnityEngine.Object"},"typeHandle":{"Identification":"UnityEngine.GameObject,
       UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","$version":"A"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
@@ -2958,7 +2940,6 @@ GameObject:
   - component: {fileID: 788194369}
   - component: {fileID: 788194368}
   - component: {fileID: 788194370}
-  - component: {fileID: 788194371}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -3064,10 +3045,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 788194371}
-        m_TargetAssemblyTypeName: MainMenuControl, Assembly-CSharp
-        m_MethodName: PlayButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 120064214}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3076,18 +3057,6 @@ MonoBehaviour:
           m_StringArgument: PlayButtonPressed
           m_BoolArgument: 1
         m_CallState: 2
---- !u!114 &788194371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 788194366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d6f81a1e3cb45847a598e6d16cb230d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -3682,7 +3651,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2007454043}
+      - m_Target: {fileID: 2007454045}
         m_TargetAssemblyTypeName: CompanyImporter, Assembly-CSharp
         m_MethodName: UpdateCEONameField
         m_Mode: 1
@@ -3769,7 +3738,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.09999, y: 6.100006}
+  m_AnchoredPosition: {x: 34.900024, y: 7.5}
   m_SizeDelta: {x: 244.88, y: 21.605}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1005621166
@@ -4354,8 +4323,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -117.22, y: 41.891235}
-  m_SizeDelta: {x: 105.0277, y: 15.0869}
+  m_AnchoredPosition: {x: -114.8, y: 43.3}
+  m_SizeDelta: {x: 44.1034, y: 15.0869}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1034534526
 MonoBehaviour:
@@ -4377,7 +4346,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Marketing name:'
+  m_text: 'Name:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5075,7 +5044,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2007454043}
+      - m_Target: {fileID: 2007454045}
         m_TargetAssemblyTypeName: CompanyImporter, Assembly-CSharp
         m_MethodName: ImportFromFolder
         m_Mode: 1
@@ -5854,7 +5823,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18.1, y: 26.277}
+  m_AnchoredPosition: {x: -5.134506, y: 26.277}
   m_SizeDelta: {x: 152.171, y: 9.624}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1251601953
@@ -5904,7 +5873,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8.3
+  m_fontSize: 8.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6505,8 +6474,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -101.66, y: 6.100006}
-  m_SizeDelta: {x: 73.9094, y: 14.7564}
+  m_AnchoredPosition: {x: -135.74, y: 7.5}
+  m_SizeDelta: {x: 85.989, y: 14.7564}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1459232152
 MonoBehaviour:
@@ -6528,7 +6497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'CEO name:'
+  m_text: 'Owner name:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6593,7 +6562,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -0.402668, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -7386,7 +7355,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2007454043}
+      - m_Target: {fileID: 2007454045}
         m_TargetAssemblyTypeName: CompanyImporter, Assembly-CSharp
         m_MethodName: Import
         m_Mode: 1
@@ -7786,8 +7755,8 @@ GameObject:
   - component: {fileID: 2007454042}
   - component: {fileID: 2007454041}
   - component: {fileID: 2007454044}
-  - component: {fileID: 2007454043}
   - component: {fileID: 2007454040}
+  - component: {fileID: 2007454045}
   m_Layer: 5
   m_Name: ImportPanel
   m_TagString: Untagged
@@ -7873,21 +7842,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2007454038}
   m_CullTransparentMesh: 1
---- !u!114 &2007454043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007454038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1e36954611b47f4294af4cc7c4e6d67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathField: {fileID: 1327136848}
-  ceoNameField: {fileID: 1011088330}
-  dropdown: {fileID: 1001870479}
 --- !u!114 &2007454044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7907,6 +7861,18 @@ MonoBehaviour:
     _objectReferences:
     - {fileID: 1327136848}
     - {fileID: 1011088330}
+--- !u!114 &2007454045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007454038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1e36954611b47f4294af4cc7c4e6d67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2104115951
 GameObject:
   m_ObjectHideFlags: 0
@@ -8040,7 +8006,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 64.753006, y: -9.173889}
+  m_AnchoredPosition: {x: 41.518, y: -9.173889}
   m_SizeDelta: {x: 245.4769, y: 8.943}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1660057539 &9223372036854775807

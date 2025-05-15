@@ -7,21 +7,21 @@ public class GameFilesManager : MonoBehaviour {
 	[SerializeField] private string companyDataFolder;
 
 	private void Start() {
-		string path = GetDataFolder();
+		string path = GetDataFolderPath();
 		if (!Directory.Exists(path)) {
 			Directory.CreateDirectory(path);
 		}
-		path = GetCompanyDataFolder();
+		path = GetCompanyDataFolderPath();
 		if (!Directory.Exists(path)) {
 			Directory.CreateDirectory(path);
 		}
 	}
 
-	public string GetDataFolder() {
+	public string GetDataFolderPath() {
 		return Application.dataPath + '/' + dataFolder;
 	}
 
-	public string GetCompanyDataFolder() {
-		return GetDataFolder() + '/' + companyDataFolder;
+	public string GetCompanyDataFolderPath() {
+		return GetDataFolderPath() + '/' + companyDataFolder;
 	}
 }
