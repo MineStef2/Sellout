@@ -3,21 +3,24 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CompaniesPanelControl : MonoBehaviour {
 	public readonly string SAVE_FILE = "companies";
-	public readonly string INDEX_FILE = "index.txt";
+	public readonly string INDEX_FILE = "index.orgx";
+	public Dictionary<string, List<CompanyCodex>> existingCompanies = new();
+	public int companyCount = 0;
 	private GameObject newCompanyPanel;
 	private GameObject availableCompanies;
-	private Dictionary<string, List<CompanyCodex>> existingCompanies = new();
-	private int companyCount = 0;
+	private List<GameObject> companyEntries = new();
+	private float totalOverEntryHeightRatio;                // this should never be 0
 
 	private void Start() {
+		availableCompanies = GameManager.GetFromVariables<GameObject>(this.gameObject, "availableCompanies");
 		newCompanyPanel = GameObject.Find("ObjectPool").GetComponent<Variables>().declarations.Get<GameObject>("newCompanyPanel");
 		newCompanyPanel.SetActive(false);
-		availableCompanies = this.GetComponent<Variables>().declarations.Get("availableCompanies", typeof(GameObject)) as GameObject;
 
 		string indexPath = this.GetIndexPath();
 		if (!File.Exists(indexPath)) {
@@ -43,17 +46,20 @@ public class CompaniesPanelControl : MonoBehaviour {
 	private void Update() {
 		if (availableCompanies.activeSelf) {
 			Scrollbar scrollbar = availableCompanies.GetComponentInChildren(typeof(Scrollbar)) as Scrollbar;
-			if (scrollbar.value >= 0 && scrollbar.value <= 1) {
-				scrollbar.value -= Input.mouseScrollDelta.y / 10;
+			if (scrollbar.value >= 0 && scrollbar.value <= 1) {         // will make the scroll animation happen even if not focused on panel
+				scrollbar.value -= Input.mouseScrollDelta.y / totalOverEntryHeightRatio / companyEntries.Count();
 			} else if (scrollbar.value < 0) {
 				scrollbar.value = 0;
 			} else if (scrollbar.value > 1) {
 				scrollbar.value = 1;
 			}
+			if (scrollbar.value > 0 && scrollbar.value < 1) {
+				companyEntries.ForEach(entry => entry.transform.position += new Vector3(0, -Input.mouseScrollDelta.y * 10, 0));
+			}
 		}
 	}
 
-	private void UpdateIndex() {
+	public void UpdateIndex() {
 		string indexPath = this.GetIndexPath();
 		File.Delete(indexPath);
 		using (StreamWriter streamWriter = new StreamWriter(indexPath, false)) {
@@ -66,37 +72,56 @@ public class CompaniesPanelControl : MonoBehaviour {
 	}
 
 	public void QueryAvailableCompanies() {
+		companyEntries.ForEach(Destroy);
+		companyEntries.Clear();
 		VariableDeclarations referencedObjects = this.GetComponent<Variables>().declarations;
 		if (existingCompanies.Count == 0) {
 			referencedObjects.Get<GameObject>("noCompanies").SetActive(true);
-		} else {
-			IEnumerable<CompanyCodex> allCodexes = existingCompanies.AsEnumerable().SelectMany(pair => pair.Value);
-			GameObject companyEntryInstance = availableCompanies.GetComponent<Variables>().declarations.Get("companyEntryInstance", typeof(GameObject)) as GameObject;
-			foreach (CompanyCodex codex in allCodexes) {
-				GameObject instance = Instantiate(companyEntryInstance, availableCompanies.transform);
-				instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = codex.internalName;
-				instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = codex.ceoName;
-			}
-			referencedObjects.Get<GameObject>("availableCompanies").SetActive(true);
-			referencedObjects.Get<GameObject>("noCompanies").SetActive(false);
+			return;
 		}
-	}
 
-	public void ImportCompany() {
+		IEnumerable<CompanyCodex> allCodexes = existingCompanies.AsEnumerable().SelectMany(pair => pair.Value);
+		GameObject companyEntryInstance = GameManager.GetFromVariables(availableCompanies, "companyEntryInstance", typeof(GameObject)) as GameObject;
+		float yoffset = 0;
+		float companyEntryHeight = 0;
+		foreach (CompanyCodex codex in allCodexes) {
+			GameObject instance = Instantiate(companyEntryInstance, availableCompanies.transform);
+			instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = codex.internalName;
+			instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = $"Guided by {codex.ceoName}, CEO";
+			instance.transform.position -= new Vector3(0, yoffset, 0);
+			RectTransform rectTransform = instance.GetComponent(typeof(RectTransform)) as RectTransform;
+			if (companyEntryHeight == 0) {
+				// will probably break on other ratios
+				companyEntryHeight = rectTransform.rect.size.y * rectTransform.GetComponentInParent<Canvas>().scaleFactor;
+			}
+			yoffset += companyEntryHeight;
+			companyEntries.Add(instance);
+		}
+		referencedObjects.Get<GameObject>("availableCompanies").SetActive(true);
+		referencedObjects.Get<GameObject>("noCompanies").SetActive(false);
+
+		Scrollbar scrollbar = availableCompanies.GetComponentInChildren(typeof(Scrollbar)) as Scrollbar;
+		float totalHeight = yoffset;
+		if (totalHeight > 0) {
+			totalOverEntryHeightRatio = totalHeight / companyEntryHeight;
+			scrollbar.size = companyEntryHeight / totalHeight;
+		}
+		scrollbar.value = 0;
 	}
 
 	public void CheckValues() {
-		TMP_InputField marketingNameField = GameObject.Find("MarketingNameField").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
+		VariableDeclarations indicators = newCompanyPanel.GetComponent<Variables>().declarations;
 
-		string marketingName = GameObject.Find("MarketingNameField").GetComponent<TMP_InputField>().text;
+		TMP_InputField marketingNameField = GameObject.Find("MarketingNameField").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
+		string marketingName = marketingNameField.text;
 		UnityEngine.UI.Button createButton = GameObject.Find("Create").GetComponent(typeof(UnityEngine.UI.Button)) as UnityEngine.UI.Button;
-		GameObject emptyCompanyWarning = newCompanyPanel.GetComponent<Variables>().declarations.Get("emptyCompanyWarning") as GameObject;
+		GameObject emptyCompanyWarning = indicators.Get("emptyCompanyWarning") as GameObject;
+		GameObject duplicateCompanyWarning = indicators.Get("duplicateCompanyWarning") as GameObject;
 
 		if (!string.IsNullOrEmpty(marketingName)) {
 			string internalName = marketingName;
-			List<string> companies = Directory.EnumerateDirectories(GameObject.Find("GameManager").GetComponent<GameFilesManager>().GetCompanyDataFolder())
+			List<string> companies = Directory.EnumerateDirectories(GameManager.GetGameFilesManager().GetCompanyDataFolder())
 				.Select(text => text.Split('\\').Last()).ToList();          // could break if Path.PathSeparator changes
-			GameObject duplicateCompanyWarning = newCompanyPanel.GetComponent<Variables>().declarations.Get("duplicateCompanyWarning") as GameObject;
 
 			if (companies.Contains(internalName)) {
 				marketingNameField.textComponent.color = Color.red;
@@ -111,18 +136,21 @@ public class CompaniesPanelControl : MonoBehaviour {
 		} else {
 			marketingNameField.textComponent.color = Color.red;
 			emptyCompanyWarning.SetActive(true);
+			duplicateCompanyWarning.SetActive(false);
 			createButton.interactable = false;
 		}
 
 		string ceoName = GameObject.Find("CEONameField").GetComponent<TMP_InputField>().text;
 		TMP_InputField ceoNameField = GameObject.Find("CEONameField").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
-		GameObject existingCeoInfo = newCompanyPanel.GetComponent<Variables>().declarations.Get("existingCeoInfo") as GameObject;
-		GameObject emptyCeoWarning = newCompanyPanel.GetComponent<Variables>().declarations.Get("emptyCeoWarning") as GameObject;
+		GameObject existingCeoInfo = indicators.Get("existingCeoInfo") as GameObject;
+		GameObject emptyCeoWarning = indicators.Get("emptyCeoWarning") as GameObject;
 
+		bool clear = true;
 		if (!string.IsNullOrEmpty(ceoName)) {
 			if (existingCompanies.ContainsKey(ceoName)) {
 				ceoNameField.textComponent.color = Color.blue;
 				existingCeoInfo.SetActive(true);
+				clear = false;
 			} else {
 				ceoNameField.textComponent.color = Color.black;
 				existingCeoInfo.SetActive(false);
@@ -132,7 +160,9 @@ public class CompaniesPanelControl : MonoBehaviour {
 			existingCeoInfo.SetActive(false);
 			ceoNameField.textComponent.color = Color.red;
 			emptyCeoWarning.SetActive(true);
+			clear = false;
 		}
+		indicators.Get<GameObject>("ceoNameInfo").SetActive(clear);
 	}
 
 	public void CreateNewCompany() {
@@ -152,7 +182,16 @@ public class CompaniesPanelControl : MonoBehaviour {
 		Company company = new Company(companyData);
 		company.Save();
 		Debug.Log($"Created new company \"{companyData.internalName}\" to ceo \"{companyData.ceoName}\" with codex {JsonUtility.ToJson(codex)}");
+		GameObject.Find("MarketingNameField").GetComponent<TMP_InputField>().text = "";
+		GameObject.Find("CEONameField").GetComponent<TMP_InputField>().text = "";
 		newCompanyPanel.GetComponent<ReturnProtocol>().BackButtonPressed();
+	}
+
+	public void ImportCompany() {
+		GameObject importCompanyPanel = GameManager.GetObject("importCompanyPanel");
+		importCompanyPanel.SetActive(true);
+		importCompanyPanel.GetComponent<CompanyImporter>().QueryAvailableCEOs();
+		gameObject.SetActive(false);
 	}
 
 	public void NewCompany() {
@@ -162,7 +201,7 @@ public class CompaniesPanelControl : MonoBehaviour {
 	}
 
 	private string GetIndexPath() {
-		return GameObject.Find("GameManager").GetComponent<GameFilesManager>().GetCompanyDataFolder() + "/" + INDEX_FILE;
+		return GameManager.GetGameFilesManager().GetCompanyDataFolder() + "/" + INDEX_FILE;
 	}
 
 	private void OnEnable() {
@@ -175,7 +214,9 @@ public class CompanyCodex {
 	public string ceoName;
 	public string internalName;
 
-	public CompanyCodex() { }
+	public CompanyCodex() {
+	}
+
 	public CompanyCodex(int index, string ceoName, string internalName) {
 		this.index = index;
 		this.ceoName = ceoName;
