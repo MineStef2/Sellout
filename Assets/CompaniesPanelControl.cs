@@ -83,13 +83,10 @@ public class CompaniesPanelControl : MonoBehaviour {
 
 	public void CheckValues() {
 		VariableDeclarations indicators = newCompanyPanel.GetComponent<Variables>().declarations;
-		void SetActive(string name, bool active) {
-			indicators.Get<GameObject>(name).SetActive(active);
-		}
+		void SetActive(string name, bool active) => indicators.Get<GameObject>(name).SetActive(active);
 
 		TMP_InputField nameField = GameObject.Find("MarketingNameField").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
-		UnityEngine.UI.Button createButton = GameObject.Find("Create").GetComponent(typeof(UnityEngine.UI.Button)) as UnityEngine.UI.Button;
-		void CheckName() {
+		bool CheckName() {
 			string name = nameField.text;
 			string internalName = CompanySerialization.ToInternalReference(name);
 			List<string> companyNames = registeredCompanies.Select(codex => codex.internalReference).ToList();
@@ -97,14 +94,13 @@ public class CompaniesPanelControl : MonoBehaviour {
 			bool duplicate = companyNames.Contains(internalName) && !empty;
 
 			nameField.textComponent.color = empty || duplicate ? Color.red : Color.black;
-			createButton.interactable = !empty && !duplicate;
 			SetActive("duplicateCompanyWarning", duplicate);
 			SetActive("emptyCompanyWarning", empty);
+			return !duplicate && !empty;
 		}
-		CheckName();
 
 		TMP_InputField ownerField = GameObject.Find("CEONameField").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
-		void CheckOwner() {
+		bool CheckOwner() {
 			string owner = GameObject.Find("CEONameField").GetComponent<TMP_InputField>().text;
 			List<string> owners = registeredCompanies.AsEnumerable().Select(codex => codex.owner).ToList();
 			bool empty = string.IsNullOrEmpty(owner);
@@ -114,8 +110,11 @@ public class CompaniesPanelControl : MonoBehaviour {
 			SetActive("ceoNameInfo", !empty && !exists);
 			SetActive("existingCeoInfo", exists);
 			SetActive("emptyCeoWarning", empty);
+			return exists;
 		}
-		CheckOwner();
+
+		UnityEngine.UI.Button createButton = GameObject.Find("Create").GetComponent(typeof(UnityEngine.UI.Button)) as UnityEngine.UI.Button;
+		createButton.interactable = CheckOwner() && CheckName();
 	}
 
 	public void CreateNewCompany() {

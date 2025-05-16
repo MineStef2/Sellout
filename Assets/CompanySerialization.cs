@@ -64,9 +64,16 @@ public static class CompanySerialization {
 		UpdateIndex(indexData);
 	}
 
-	public static List<CompanyCodex> FlattenedCompanyRegistries() => existingCompanies.AsEnumerable().SelectMany(pair => pair.Value).ToList();
+	public static List<CompanyCodex> FlattenedCompanyRegistries() {
+		return existingCompanies.AsEnumerable().SelectMany(pair => pair.Value).ToList();
+	}
 
-	public static List<string> UniqueOwners() => existingCompanies.Keys.ToList();
+	public static List<string> UniqueOwners() {
+		if (existingCompanies.Keys.ToList().Count() == 0) {
+			LoadFromIndex(GetDefaultIndexPath());
+		}
+		return existingCompanies.Keys.ToList();
+	}
 
 	public static string GetDefaultIndexPath() => GameManager.GameFiles().GetCompanyDataFolderPath() + "/" + DEFAULT_INDEX;
 
